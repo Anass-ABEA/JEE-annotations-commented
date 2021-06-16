@@ -1,5 +1,7 @@
 package ma.ac.emi.g.info.EmiApplication;
 
+import ma.ac.emi.g.info.EmiApplication.userTypes.Personne;
+import ma.ac.emi.g.info.EmiApplication.userTypes.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
