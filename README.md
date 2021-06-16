@@ -150,6 +150,7 @@ Result :
 
 ```
 class A { 
+    @Id
     private int id1; 
     private int param1; 
 
@@ -159,6 +160,7 @@ class A {
 }
 
 class B { 
+    @Id
     private int id2; 
     private int param2; 
 
@@ -179,8 +181,6 @@ B b = new B(3 , a);
 
 The constructor of B should take the `id2` by doing `this.id2 = a.getId();` and saving the attribute a 
 `this.a = a;`
-
-
 
 
 ### One to Many
@@ -219,6 +219,7 @@ Result is :
 
 ```
 class A { 
+    @Id
     private int id1; 
     private int param1; 
 
@@ -228,6 +229,7 @@ class A {
 }
 
 class B { 
+    @Id
     private int id2; 
     private int param2;
 
@@ -303,6 +305,7 @@ In the other class, we add the annotation, example `B` class.
 Result is : 
 ```
 class A { 
+    @Id
     private int id1; 
     private int param1; 
 
@@ -311,6 +314,7 @@ class A {
 }
 
 class B { 
+    @Id
     private int id2; 
     private int param2;
     
@@ -336,4 +340,79 @@ b.addToList(a);
 here we will add the object `a` to the list inside the instance of `B` class. 
 
 Note that B is the one that created the table (specified the name and the columns)
+
+## Composed Primary Key? 
+
+in JEE you can NOT add the annotaiton `@Id` twice. To add a composed primary key ( 2 or more ), you should create a new class with the annotation 
+ `@Embeddable` like such : 
+
+Do not forget to add the serialValueUID ( it is most of the time generated automatically when you implement the interface `Serializable`)
+
+You also need to Override the methods `equals(Object o)` et `hasCode()` 
+```
+@Embeddable
+public class ComposedPrimaryKey implements Serializable{
+    private static final long serialVersionUID = 5425227757512114629L;
+    private String idPart1;
+    private String idPart2;
+    
+    @Override
+    public int hashCode(){
+        // return a unique hashcode here.
+        // preferably use classes to use the method hashCode inside 
+        // avoid using int or float or long , use Long, Integer or Float 
+    }
+}
+```
+
+and in the class you want to use the composed primary key you can add it with the annotaiton 
+ `@EmbeddedId` like so 
+
+```
+public class MyClass{
+
+    @EmbeddedId
+    private ComposedPrimaryKey myPrimaryKey;
+}
+```
+
+
+Each time you want to use it in relationships you need to add a dot to specify which one to use
+
+using the previous example : 
+
+```
+public class A{
+    @Id
+    private int ID;
+       
+    @OneToMany(mappedBy="myPrimaryKey.idPart1")
+    private List<MyClass> listeMyClass = new ArrayList<>();
+}
+
+public class MyClass{
+
+    @EmbeddedId
+    private ComposedPrimaryKey myPrimaryKey;
+}
+
+@Embeddable
+public class ComposedPrimaryKey implements Serializable{
+    private static final long serialVersionUID = 5425227757512114629L;
+
+    @ManyToOne
+    @JoinColumn(name = "myclass_id")
+    private String idPart1;
+
+    private String idPart2;
+    
+    @Override
+    public int hashCode(){
+        // return a unique hashcode here.
+        // preferably use classes to use the method hashCode inside 
+        // avoid using int or float or long , use Long, Integer or Float 
+    }
+}
+
+```
 
