@@ -58,9 +58,9 @@ Table A :
 
 | id | param1 |
 | :---: | :---: |
-| 1 | 290 | 
-| 1 | 290 |
-| 1 | 290 | 
+| 2 | 290 | 
+| 3 | 290 |
+| 4 | 290 | 
 
 Table B : 
 
@@ -69,18 +69,18 @@ Table B :
  | 1 | 50 |
 
 
+
 ### InheritanceType.SINGLE_TABLE
 Use the annotation :
  `@Inheritance(strategy = InheritanceType.SINGLE_TABLE)` before the definition of the partent class `A`\
-
+ 
 creates one table like so : 
 
 | id | param1 | param2 |
 | :---: | :---: | :---: |
 | 1 | 290 | 50 |
-| 1 | 290 | NULL |
-| 1 | 290 | NULL |
-
+| 2 | 290 | NULL |
+| 3 | 290 | NULL |
 
 
 ### InheritanceType.TABLE_PER_CLASS
@@ -96,8 +96,8 @@ Table A :
 | id | param1 |
 | :---: | :---: |
 | 1 | 290 | 
-| 1 | 290 |
-| 1 | 290 | 
+| 2 | 290 |
+| 3 | 290 | 
 
 Table B : 
 
@@ -181,7 +181,7 @@ A a = new A(1,3);
 B b = new B(3 , a);
 ```
 
-The constructor of B should take the `id2` by doing `this.id2 = a.getId();` and saving the attribute a 
+The constructor of B should take the `id2` by doing `this.id2 = a.getId1();` and saving the attribute a 
 `this.a = a;`
 
 
@@ -245,15 +245,15 @@ The SQL tables will be :
 
 Table A : 
 
-| id | id1 | param1 |
-| :---: | :---: | :---: |
-| 1 | 290 | 50 |
+| id1 | param1 |
+| :---: | :---: |
+| 1 | 50 |
 
 Table B : 
 
-| id | id2 | param2 | a_id |
-| :---: | :---: | :---: | :---: |
-| 1 | 290 | 50 | 1 |
+| id2 | param2 | a_id |
+| :---: | :---: | :---: |
+| 290 | 50 | 1 |
 
 **IMPORTANT NOTE:** To insert an element in the table we follow the same logic as in One-To-One
 
@@ -419,4 +419,39 @@ public class ComposedPrimaryKey implements Serializable{
 
 ## Repositories
 
+Repositories should 
+
+### Select queries
+
+you can add select in the repository interface by adding the annotation `@Query("SQL")`
+
+### NO CONDITIONS
+
+```
+@Query("SELECT * FROM USERS")
+public List<Users> selectAllUsers();
+```
+
+### WITH A CONDITION
+
+```
+@Query("SELECT * FROM USERS where name LIKE :x")
+public Page<Users> findUsersByName(@Param("x") String nom);
+```
+
+### WITH CONDITIONS
+
+```
+@Query("SELECT * FROM USERS where name LIKE :x and age = :a")
+public Page<Users> findUsersByName(@Param("x") String nom,@Param("a") String age);
+```
+
+## Update queries
+for the update queries we HAVE to add the annotation `@Modifying`
+
+```
+@Modifying
+@Query("UPDATE users set age = :a where id = :i")
+public Page<Users> updateAgeUser(@Param("i") String id,@Param("a") String age);
+```
 
