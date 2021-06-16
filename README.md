@@ -51,18 +51,6 @@ _______
 ### InheritanceType.JOINED
 Use the annotation :
 `@Inheritance(strategy = InheritanceType.JOINED)`  before the definition of the partent class `A`\
-creates one table like so : 
-
-| id | param1 | param2 |
-| :---: | :---: | :---: |
-| 1 | 290 | 50 |
-| 1 | 290 | NULL |
-| 1 | 290 | NULL |
-
-
-### InheritanceType.SINGLE_TABLE
-Use the annotation :
- `@Inheritance(strategy = InheritanceType.SINGLE_TABLE)` before the definition of the partent class `A`\
 
 creates 2 like so : 
 
@@ -79,6 +67,20 @@ Table B :
 | id | param2 |
  | :---: | :---: |
  | 1 | 50 |
+
+
+### InheritanceType.SINGLE_TABLE
+Use the annotation :
+ `@Inheritance(strategy = InheritanceType.SINGLE_TABLE)` before the definition of the partent class `A`\
+
+creates one table like so : 
+
+| id | param1 | param2 |
+| :---: | :---: | :---: |
+| 1 | 290 | 50 |
+| 1 | 290 | NULL |
+| 1 | 290 | NULL |
+
 
 
 ### InheritanceType.TABLE_PER_CLASS
@@ -413,6 +415,8 @@ public class ComposedPrimaryKey implements Serializable{
         // avoid using int or float or long , use Long, Integer or Float 
     }
 }
-
 ```
+
+## Repositories
+
 
